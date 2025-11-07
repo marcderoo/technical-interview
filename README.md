@@ -37,3 +37,90 @@ Do not spend too much time on any one part of the project. We will be reviewing 
 ## Additional resources
 
 If you want to learn more about library we use to generate the data and interact with the power grid, check out the [Grid2op Documentation](https://grid2op.readthedocs.io/en/latest/). Do not go too deep into the details as the focus should be on the overall workflow and not how to generate the data.
+
+
+------------------------------------------------------------------------------------------------
+
+# Mon workflow
+
+## Architecture
+
+```bash
+technical-interview/
+│
+├── powergrid/                     # Package principal
+│   ├── __init__.py
+│   ├── data.py                    # Génération et traitement des datasets
+│   ├── model.py                   # Modélisation (Random Forest)
+│   └── viz.py                     # Visualisation des prédictions et erreurs
+│
+├── scripts/                       # Scripts exécutables
+│   ├── generate_data.py           # Génération et caching du dataset
+│   ├── train_model.py             # Entraînement du modèle
+│   └── visualize.py               # Visualisation des erreurs de prédiction
+│
+├── data/                          # Stockage des données
+│   ├── cache/                     
+│   └── cache_test/                
+│
+├── tests/                         # Tests unitaires
+│   ├── test_cache.py 
+│   ├── test_data.py                     
+│   └── test_model.py 
+│ 
+├── results/                       # Stockage des résultats
+│
+├── notebook_dev.ipynb             # Notebook d'exploration
+│
+├── README.md
+└── requirements.txt
+```
+
+## 1️⃣ Génération et traitement des données
+
+Le script `scripts/generate_data.py` permet de :
+
+- Créer des observations réalistes à partir de l’environnement Grid2Op (`l2rpn_case14_sandbox`).
+- Extraire des features pour chaque état du réseau :  
+  - `gen_p_i` / `gen_q_i` : production active et réactive des générateurs  
+  - `load_p_i` / `load_q_i` : consommation active et réactive des charges  
+  - `topo_i` : topologie des lignes (ouvert/fermé)  
+  - `rho_i` : surcharge actuelle de chaque ligne
+- Créer les targets pour chaque action (max rho sur les lignes après action).
+- Implémenter un système de cache pour éviter de recalculer les données si elles existent déjà.
+
+Exemple d’utilisation :
+
+```bash
+python scripts/generate_data.py --episodes 2 --actions 100
+python scripts/generate_data.py --episodes 2 --actions 100 --force # pour forcer la régénération
+```
+
+
+## 2️⃣ Modélisation
+
+On utilise simplement un Random Forest Regressor (sklearn), capable de prédire plusieurs actions simultanément.
+La RMSE est calculée pour évaluer la performance du modèle. Enfin, un graphique de feature importance est généré (20 meilleures).
+
+```bash
+python scripts/train_model.py 
+```
+
+## 3️⃣ Vizualisation
+
+On trace simplement des boxplots des erreurs de prédiction par action pour analyser la qualité des prédictions.
+```bash
+python scripts/viz.py 
+```
+
+## 4️⃣ Test
+
+On inclut des tests unitaires pour garantir la robustesse du pipeline :
+
+- Vérifier que le cache est créé et réutilisé correctement (test_cache.py).
+- Vérifier que les features et targets ont la bonne forme et des colonnes cohérentes (test_data.py).
+- Vérifier que le modèle peut s’entraîner et prédire sans erreurs (test_model.py)
+
+```bash
+pytest -v tests/
+```
