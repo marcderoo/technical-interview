@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-"""
-scripts/generate_data.py
-------------------------
-Génère les données pour l'entraînement :
-- Simule des observations Grid2Op
-- Extrait les features et targets
-- Met en cache les fichiers
-- Fait un split train/test
-"""
-
 import argparse
 from powergrid.data import generate_and_cache
 

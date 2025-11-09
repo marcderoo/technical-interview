@@ -2,5 +2,8 @@ grid2op==1.12.1
 lightsim2grid==0.10.3
 polars==1.33.1
 numpy==2.3.3
+pandas==2.3.3
+scikit-learn==1.7.2
+matplotlib==3.10.7
 tqdm==4.67.1
 pyarrow==21.0.0

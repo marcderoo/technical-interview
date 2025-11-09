@@ -11,9 +11,6 @@ from grid2op.Environment import Environment
 from lightsim2grid import LightSimBackend
 
 
-# ==========================
-# 🔹 Extraction des features
-# ==========================
 def extract_features(obs: BaseObservation) -> pl.DataFrame:
     """
     Transforme une observation du réseau en DataFrame Polars avec noms de colonnes explicites.
@@ -39,9 +36,6 @@ def extract_features(obs: BaseObservation) -> pl.DataFrame:
     return pl.DataFrame([feature_array], schema=feature_names, orient="row")
 
 
-# ==================================
-# 🔹 Simulation et collecte des obs
-# ==================================
 def create_realistic_observation(episode_count: int, env: Environment) -> list[BaseObservation]:
     """Crée une liste d'observations réalistes avec actions 'rien faire'."""
     list_obs = []
@@ -56,9 +50,6 @@ def create_realistic_observation(episode_count: int, env: Environment) -> list[B
     return list_obs
 
 
-# ============================================
-# 🔹 Création du dataset features / targets
-# ============================================
 def create_training_data(list_obs: list[BaseObservation], all_actions: list[BaseAction]):
     """Crée features et targets pour ML"""
     df_features = []
@@ -81,9 +72,6 @@ def create_training_data(list_obs: list[BaseObservation], all_actions: list[Base
     return df_features, df_targets
 
 
-# ==========================
-# 🔹 Fonction de génération
-# ==========================
 def generate_and_cache(
     cache_dir: str = "data/cache",
     episode_count: int = 2,

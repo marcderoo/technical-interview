@@ -1,4 +1,5 @@
 import argparse
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -53,6 +54,7 @@ def main():
 
     # Predict
     y_pred = model.predict(X_test)
+    os.makedirs("results", exist_ok=True)
     pd.DataFrame(y_pred).to_parquet("results/y_pred.parquet")
     pd.DataFrame(y_test).to_parquet("results/y_true.parquet")
 

@@ -76,6 +76,11 @@ technical-interview/
 └── requirements.txt
 ```
 
+Prendre en compte le package `powergrid` dans les scripts :
+```bash
+$env:PYTHONPATH = "."
+```
+
 ## 1️⃣ Génération et traitement des données
 
 Le script `scripts/generate_data.py` permet de :

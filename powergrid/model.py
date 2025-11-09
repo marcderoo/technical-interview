@@ -15,10 +15,8 @@ class RandomForestPowerGrid:
         """Replace inf in targets by max_valid + 0.1"""
         max_valid = np.max(y_train[np.isfinite(y_train)])
         y_train[~np.isfinite(y_train)] = max_valid + 0.1
-        
         max_valid = np.max(y_test[np.isfinite(y_test)])
         y_test[~np.isfinite(y_test)] = max_valid + 0.1
-        
         return y_train, y_test
 
     def fit(self, X_train, y_train):
